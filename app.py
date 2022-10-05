@@ -1,10 +1,14 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect, url_for
 from wtforms import (StringField, SubmitField, PasswordField)
 from flask_wtf import FlaskForm
 from wtforms.validators import input_required
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 from os import getenv
+
+
+
+
 app = Flask(__name__)
 db = SQLAlchemy(app)
 
@@ -32,11 +36,57 @@ class Users(db.Model):
 
 class Register_forms(FlaskForm):
     register_submit = SubmitField()
-    register_username = StringField(validators=[input_required()])
-    register_password = PasswordField(validators=[input_required()])
-    register_firstname = StringField(validators=[input_required()])
-    register_lastname = StringField(validators=[input_required()])
+    register_username = StringField(validators=[input_required()]) #Nie puste pole oraz nie może się powtarzać
+    register_password = PasswordField(validators=[input_required()]) #Nie puste pole minimum 8 znaków, 1 litera duża, 1 mala, jedna cyfra (przynajmnie)
+    register_firstname = StringField(validators=[input_required()]) #Nie puste pole
+    register_lastname = StringField(validators=[input_required()]) #Nie puste pole
 
+    def validation(self):
+        username = self.register_username.data
+        firstname = self.register_firstname.data
+        lastname = self.register_lastname.data
+        password = self.register_password.data
+
+        characters_max = 32
+        characters_min = 1
+        username_min = 3
+        username_max = 32
+        password_min = 8
+        password_max = 64
+
+        if len(password) < amount_of_password_min:
+            raise Exception("Hasło musi zawierać minimum 8 znaków")
+
+        if len(password) > amount_of_password_max:
+            raise Exception("Hasło nie moze zawierać więcej niż 64 znaki")
+
+        if len(firstname) < characters_min or len(lastname) < characters_min:
+            raise Exception("Imię lub nazwisko nie spełnia minimalnych wymagań")
+
+        if len(firstname) > characters_max or len(lastname) > characters_max:
+            raise Exception("Imię lub nazwisko posiada za dużo znaków")
+
+        if len(username) < username_min:
+            raise Exception("Nazwa użytkownika jest zbyt krótka")
+        
+        if len(username) > username_max:
+            raise Exception("Nazwa użytkownika jest zbyt długa")
+
+
+        if_exists = Users.query.filter_by(username = username).first()
+        if if_exists:
+            raise Exception("Taki użytkownik już istnieje")
+
+        if password == password.upper():
+            raise Exception("Hasło nie ma małych liter")
+
+        if password == password.lower():
+            raise Exception("Hasło nie ma dużych liter")
+
+        if not any(char.isdigit() for char in password):
+            raise Exception("Hasło nie zawiera przynajmniej 1 cyfry")
+
+        return True
 
 class Login_forms(FlaskForm):
     login_username = StringField()
@@ -59,20 +109,22 @@ def home():
 	return render_template('home.html')
 
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
 
-    login = Login_forms()
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+
     register = Register_forms()
 
     if register.validate_on_submit():
-        db.session.add(Users(username=register.register_username.data,
-                        password=register.register_password.data,
-                        lastname=register.register_lastname.data,
-                        firstname=register.register_firstname.data))
-        db.session.commit()
+        if register.validation():
+            db.session.add(Users(username=register.register_username.data,
+                            password=register.register_password.data,
+                            lastname=register.register_lastname.data,
+                            firstname=register.register_firstname.data))
+            db.session.commit()
+            return redirect(url_for('home'))
 
-    return render_template('login.html', login=login, register=register)
+    return render_template('register.html', register=register)
   
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5000, debug=True)

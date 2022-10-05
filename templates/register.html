@@ -4,11 +4,11 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Logowanie</title>
+  <title>Rejestracja</title>
 </head>
 <body>
   <h1>Register</h1>
-  <form action="/login" method="post">
+  <form action="/register" method="post">
     {{ register.hidden_tag()}}
     <p>Username:{{register.register_username}}</p>
     <p>Imię:{{register.register_firstname}}</p>
@@ -16,10 +16,5 @@
     <p>Hasło:{{register.register_password}}</p>
     {{register.register_submit}}
   </form>
-
-  <h1>Login</h1>
-  <p>Username:{{login.login_username}}</p>
-  <p>Hasło:{{login.login_password}}</p>
-  <p>{{login.login_submit}}</p>
 </body>
 </html>
