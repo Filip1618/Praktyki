@@ -3,13 +3,22 @@ from wtforms import (StringField, SubmitField, PasswordField)
 from flask_wtf import FlaskForm
 from wtforms.validators import input_required
 from flask_sqlalchemy import SQLAlchemy
-
+from dotenv import load_dotenv
+from os import getenv
 app = Flask(__name__)
 db = SQLAlchemy(app)
 
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:7N2O02map44okqCdFae@localhost/sotm_database'
-app.config['SECRET_KEY'] = 'Y3QqxspWmAN6fjfdj2IGlM49WqHyfjP1'
+load_dotenv()
+DATABASE_USERNAME=getenv('DATABASE_USERNAME')
+DATABASE_PASSWORD=getenv('DATABASE_PASSWORD')
+DATABASE_URL=getenv('DATABASE_URL')
+DATABASE_NAME=getenv('DATABASE_NAME')
+
+APP_KEY=getenv('APP_KEY')
+
+app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{DATABASE_USERNAME}:{DATABASE_PASSWORD}@{DATABASE_URL}/{DATABASE_NAME}'
+app.config['SECRET_KEY'] = APP_KEY
 
 
 
