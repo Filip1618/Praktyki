@@ -1,20 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rejestracja</title>
-</head>
-<body>
-  <h1>Register</h1>
-  <form action="/register" method="post">
-    {{ register.hidden_tag()}}
-    <p>Username:{{register.register_username}}</p>
-    <p>Imię:{{register.register_firstname}}</p>
-    <p>Nazwisko:{{register.register_lastname}}</p>
-    <p>Hasło:{{register.register_password}}</p>
-    {{register.register_submit}}
-  </form>
-</body>
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/register/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="body--container">
+      <div class="main--container">
+        <div class="main--content">
+          <div class="main--secondary">
+            <div class="logo">
+              <img src="../static/register/SotM-logo.webp" alt="">
+            </div>
+            <div class="info">
+              <h2>Zarejestruj się aby zdobyć pełną funkcjonalność</h2>
+              <p>Odblokuj możliwość publikowania komentarzy, ocen, oraz tworzenia list seriali oraz filmów</p>
+            </div>
+            <div class="images">
+              <img src="../static/register/image.svg" alt="">
+            </div>
+          </div>
+          <form action="/register" method="post">
+            <div class="main--form">
+              <h1>Rejestracja</h1>
+              {{register.hidden_tag()}}
+              <div class="input--container input-effect">
+                {{register.register_username(class="input--field")}}
+                  <label>Nazwa użytkownika</label>
+                  <span class="focus-border"></span>
+              </div>
+              <div class="input--container input-effect">
+                {{register.register_firstname(class="input--field")}}
+                  <label>Imię</label>
+                  <span class="focus-border"></span>
+              </div>
+              <div class="input--container input-effect">
+                {{register.register_lastname(class="input--field")}}
+                  <label>Nazwisko</label>
+                  <span class="focus-border"></span>
+              </div>
+              <div class="input--container input-effect">
+                {{register.register_password(class="input--field")}}
+                  <label>Hasło</label>
+                  <span class="focus-border"></span>
+              </div>
+              <div class="submit--button">
+                {{register.register_submit(value="Zarejestruj się")}}
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </body>
 </html>
+
+
+
+
+
