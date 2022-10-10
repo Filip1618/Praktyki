@@ -92,8 +92,8 @@ class Register_forms(FlaskForm):
         return True
 
 class Login_forms(FlaskForm):
-    login_username = StringField()
-    login_password = PasswordField()
+    login_username = StringField(validators=[input_required()])
+    login_password = PasswordField(validators=[input_required()])
     login_submit = SubmitField()
 
 

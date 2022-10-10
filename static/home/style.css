@@ -1,0 +1,197 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800&display=swap");
+
+:root{
+  --material-black:#292929;
+  --royal-yellow:#fada5e;
+}
+
+* {
+  margin: 0;
+  font-family: "Poppins";
+}
+
+body{
+  width: 100vw;
+  overflow-x: hidden;
+}
+
+
+.header{
+  width: 100vw;
+  height: 4rem;
+  position: fixed;
+  background-color: var(--royal-yellow);
+  z-index: 999;
+}
+
+.navbar{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+}
+
+.navbar div{
+  margin: 1rem;
+}
+
+
+.navbar--logo img{
+  height: 52px;
+}
+
+
+input[type="text"], input[type="password"]{
+  font: 18px "Poppin", sans-serif;
+  color: #333;
+  width: 100%;
+  box-sizing: border-box;
+  letter-spacing: 1px;
+}
+
+:focus {
+  outline: none;
+}
+
+.input--container {
+  width: 300px;
+  margin: 2rem 0 2rem 0;
+  position: relative;
+  overflow: hidden;
+} 
+
+.input--field{
+  border: 0;
+  padding: 5px 0;
+  border-bottom: 3px solid #fff;
+  background-color: transparent;
+}
+
+.input--field ~ .focus-border {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 4px;
+  background-color: var(--material-black);
+  transition: 0.4s;
+}
+
+
+.input--field:focus ~ .focus-border,
+.input--field:valid ~ .focus-border {
+  width: 100%;
+  transition: 0.4s;
+}
+
+
+.input--field ~ label {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  top: 4px;
+  color: #aaa;
+  transition: 0.3s;
+  z-index: -1;
+
+}
+
+
+.input--field:focus ~ label,
+.input--field:valid ~ label {
+  left: -200px;
+  font-size: 14px;
+  color: var(--material-black);
+}
+
+
+.navbar--user{
+  display: flex;
+  gap: 1.5rem;
+  margin-right: 3rem !important;
+}
+
+
+.navbar--user a {
+  color: var(--material-black);
+  position: relative;
+  text-decoration: none;
+  font-size: larger;
+}
+
+.navbar--user a::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 4px;
+  border-radius: 4px;
+  background-color: var(--material-black);
+  bottom: -3px;
+  left: 0;
+  transform-origin: right;
+  transform: scaleX(0);
+  transition: transform .3s ease-in-out;
+}
+
+.navbar--user a:hover::before {
+  transform-origin: left;
+  transform: scaleX(1);
+}
+
+
+
+
+.main--container{
+  position: relative;
+  width: 100%;
+  transform: translateY(4rem);
+  height: 100vh;
+}
+
+.main--content{
+  width: 70%;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0);
+}
+
+.random--movie{
+  width: 100%;
+  height: fit-content;
+}
+
+.trendingMovie {
+  position: relative;
+  overflow: hidden;
+  height: 40vw;
+  border-radius: 0 0 2rem 2rem;
+}
+
+.trendingMovie img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
+  transition: all .3s ease-in-out;
+}
+
+.trendingMovie img:hover{
+  scale: 1.1;
+  z-index: -1;
+}
+
+.trendingMovie h1{
+  position: absolute;
+  z-index: 2;
+  color: #fff;
+  margin: 1rem;
+  font-size: 2vw;
+}
+
+.trendingMovie h1:hover{
+  opacity: 0;
+}
+
+
+
+
