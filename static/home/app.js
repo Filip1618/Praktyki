@@ -52,7 +52,14 @@ const renderedArray = arrayOfMovies.map((movie) =>
   </li>
 );
 
-return (<ul>{renderedArray}</ul>);
+return (
+  <>
+  <h1>Trendujące dzisiaj</h1>
+  <ul className="list--of--trends">
+    {renderedArray}
+  </ul>
+  </>
+);
 
 }
 
@@ -76,11 +83,11 @@ function RenderRandomTrendMovie(props) {
 
 
 
-
-
-
-
 const arrayOfMovies = getArrayOfTrendingMovies()
+
 
 const randomMovie = ReactDOM.createRoot(document.getElementById("randomMovie"))
 randomMovie.render(<RenderRandomTrendMovie arrayOfMovies={arrayOfMovies}/>)
+
+const trendingMovies = ReactDOM.createRoot(document.getElementById('trendingMovies'))
+trendingMovies.render(<RenderListOfTrends arrayOfMovies={arrayOfMovies}/>)
