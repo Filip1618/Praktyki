@@ -22,12 +22,13 @@
         <div class="navbar--logo">
           <img src="../static/home/SotM-logo.webp" alt="SotM-logo" />
         </div>
-        <div class="navbar--search">
+        <div class="navbar--search"> 
           <div class="input--container input-effect">
             <input
               class="input--field"
-              id="register_firstname"
-              name="register_firstname"
+              id="searchBar"
+              class="search--bar"
+              name="search--bar"
               required=""
               type="text"
               value=""
@@ -43,8 +44,11 @@
           {%endif%}
         </div>
       </nav>
+      <div class="search--area" id="searchArea">
+
+      </div>
     </header>
-    <div class="main--container">
+    <div class="main--container" id="mainContainer">
       <div class="main--content">
         <div class="random--movie" id="randomMovie">
         </div>
