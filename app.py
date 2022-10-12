@@ -143,6 +143,9 @@ def logout():
     logout_user()
     return redirect(url_for('home'))
 
+@app.route("/serial/<tv_show_id>", methods = ['GET', 'POST'])
+def movie_template(tv_show_id):
+    return render_template('movie_template.html', tv_show_id = tv_show_id)
 
 @login_manager.user_loader
 def load_user(user_id):

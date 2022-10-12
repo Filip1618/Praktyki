@@ -41,6 +41,8 @@
           {%if not current_user.is_authenticated%}
           <a href="/register">Rejestracja</a>
           <a href="/login">Zaloguj się</a>
+          {%else%}
+          <a href="/logout">Wyloguj się</a>
           {%endif%}
         </div>
       </nav>

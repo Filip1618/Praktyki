@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script
+      crossorigin
+      src="https://unpkg.com/react@18/umd/react.development.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
+    ></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link rel="stylesheet" href="../static/movie/style.css" />
+    <link
+      href="http://fonts.googleapis.com/css?family=Bitter&subset=latin,latin-ext"
+      rel="stylesheet"
+      type="text/css"
+    />
+  </head>
+  <body>
+    <header class="header">
+      <nav class="navbar">
+        <div class="navbar--logo">
+          <img src="../static/movie/SotM-logo.webp" alt="SotM-logo" />
+        </div>
+        <div class="navbar--search">
+          <div class="input--container input-effect">
+            <input
+              class="input--field"
+              id="searchBar"
+              class="search--bar"
+              name="search--bar"
+              required=""
+              type="text"
+              value=""
+            />
+            <label>Wyszukaj film lub serial</label>
+            <span class="focus-border"></span>
+          </div>
+        </div>
+        <div class="navbar--user">
+          {%if not current_user.is_authenticated%}
+          <a href="/register">Rejestracja</a>
+          <a href="/login">Zaloguj się</a>
+          {%else%}
+          <a href="/logout">Wyloguj się</a>
+          {%endif%}
+        </div>
+      </nav>
+      <div class="search--area" id="searchArea"></div>
+    </header>
+    <div class="main--container" id="mainContainer">
+      <div class="backdrop--container" id="backdrop"></div>
+      <div class="main--info--container" id="mainInfo"></div>
+      <div class="comments--container">
+        <div class="comments">
+          {% if current_user.is_authenticated%}
+          <form action="/serial/{{tv_show_id}}">
+            <div class="upload--comment">
+              <h3>{{current_user.username}}</h3>
+              <div class="input--container input-effect">
+                <input
+                  class="input--field"
+                  id="uploadComment"
+                  class="comment--input"
+                  name="comment--input"
+                  required=""
+                  type="text"
+                  value=""
+                />
+                <label>Dodaj komentarz</label>
+                <span class="focus-border"></span>
+              </div>
+              <div class="submit--button">
+                <input type="submit" value="Skomentuj">
+              </div>
+            </div>
+          </form>
+          {%else%}
+            <div class="upload--comment">
+              Zaloguj się by móc ocenić oraz napisać komentarz
+            </div>
+          {%endif%}
+        </div>
+      </div>
+    </div>
+
+    <script src="../static/movie/app.js" type="text/babel"></script>
+    <script
+      type="text/javascript"
+      src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"
+    ></script>
+  </body>
+</html>
