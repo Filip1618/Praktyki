@@ -3,11 +3,13 @@ from wtforms import (StringField, SubmitField, PasswordField)
 from flask_wtf import FlaskForm
 from wtforms.validators import input_required
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import UserMixin, LoginManager, login_user, logout_user
+from flask_login import UserMixin, LoginManager, login_user, logout_user, current_user
 from dotenv import load_dotenv
 from os import getenv
 from flask_bcrypt import Bcrypt
-
+from datetime import datetime
+from sqlalchemy import Column, Integer, DateTime
+from sqlalchemy.ext.declarative import declarative_base
 
 load_dotenv()
 DATABASE_USERNAME=getenv('DATABASE_USERNAME')
@@ -38,12 +40,26 @@ class Users(db.Model, UserMixin):
 	firstname = db.Column(db.String(32),nullable=False, unique=False)
 	lastname = db.Column(db.String(32), nullable=False, unique=False)
 
+
+class Comments(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    content = db.Column(db.String(256), nullable=False, unique=False)
+    date = db.Column(db.DateTime, nullable=False, unique=False, default=datetime.utcnow)
+    username = db.Column(db.String(32), nullable=False, unique=False)
+    media_type = db.Column(db.String(16), nullable=False, unique=False)
+    media_id = db.Column(db.Integer, nullable=False, unique=False)
+
+
+    
+
+
 class Register_forms(FlaskForm):
     register_submit = SubmitField()
     register_username = StringField(validators=[input_required()]) 
     register_password = PasswordField(validators=[input_required()])
     register_firstname = StringField(validators=[input_required()])
     register_lastname = StringField(validators=[input_required()]) 
+
 
     def validation(self):
         username = self.register_username.data
@@ -97,6 +113,15 @@ class Login_forms(FlaskForm):
     login_submit = SubmitField()
 
 
+class Comments_forms(FlaskForm):
+    comment_submit = SubmitField("Skomentuj")
+    comment_stringfield = StringField(validators=[input_required()])
+
+    def validate(self):
+        if len(self.comment_stringfield.data) < 1:
+            raise Exception("Komentarz nie może być pusty")
+        return True
+
 @app.route('/')
 @app.route('/home')
 def home():
@@ -143,9 +168,38 @@ def logout():
     logout_user()
     return redirect(url_for('home'))
 
+
 @app.route("/serial/<tv_show_id>", methods = ['GET', 'POST'])
-def movie_template(tv_show_id):
-    return render_template('movie_template.html', tv_show_id = tv_show_id)
+def tv_show_template(tv_show_id):
+    comment_forms = Comments_forms()
+
+    if comment_forms.validate_on_submit() and current_user.is_authenticated:
+        new_comment = Comments(content = comment_forms.comment_stringfield.data, username = current_user.username, 
+                                media_type="serial", media_id = tv_show_id)
+        db.session.add(new_comment)
+        db.session.commit()
+        return redirect(f"/serial/{tv_show_id}")
+
+    list_of_comments = Comments.query.filter_by(media_type = "serial", media_id = tv_show_id)
+
+    return render_template('tv_show_template.html', tv_show_id = tv_show_id, comment_forms=comment_forms, list_of_comments = list_of_comments)
+
+
+@app.route('/film/<movie_id>', methods=['GET', 'POST'])
+def movie_template(movie_id):
+    comment_forms = Comments_forms()
+
+    if comment_forms.validate_on_submit() and current_user.is_authenticated:
+        new_comment = Comments(content = comment_forms.comment_stringfield.data, username = current_user.username, 
+                               media_type="film", media_id = movie_id)
+        db.session.add(new_comment)
+        db.session.commit()
+        return redirect(f"/film/{movie_id}")
+
+    list_of_comments = Comments.query.filter_by(media_type = "film", media_id = movie_id)
+
+
+    return render_template('movie_template.html', movie_id=movie_id, comment_forms=comment_forms, list_of_comments = list_of_comments)
 
 @login_manager.user_loader
 def load_user(user_id):

@@ -68,14 +68,16 @@ const getJSON = (url) => {
 };
 
 function RenderBackdrop(props){
-  const movie = props.movie
+  const movieID = props.movieID
+
+  var movie = getJSON(`https://api.themoviedb.org/3/tv/${movieID}?api_key=87bf596c371c406133fdf1b253db9a36&language=pl`)
 
   return (
       <div className="backdrop">
         <div className="backdrop--info">
           <h1>{movie.title}</h1>
-          <p>Film</p>
-          <p>{movie.release_date.slice(0,4)}</p>
+          <p>Serial</p>
+          <p>{movie.first_air_date.slice(0,4)}</p>
         </div>
         <img
           src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
@@ -85,7 +87,10 @@ function RenderBackdrop(props){
 }
 
 function RenderMainInfo(props) {
-  const movie = props.movie
+  const movieID = props.movieID
+
+  var movie = getJSON(`https://api.themoviedb.org/3/tv/${movieID}?api_key=87bf596c371c406133fdf1b253db9a36&language=pl`)
+
   return(
     <div className="main--info">
       <p className="overview--alt">{movie.overview == "" ? "Brak opisu :(" : movie.overview}</p>
@@ -93,41 +98,42 @@ function RenderMainInfo(props) {
         <img src={`https://image.tmdb.org/t/p/original${movie.poster_path}`}/>
         <div className="info">
           <p className="overview">{movie.overview == "" ? "Brak opisu :(" : movie.overview}</p>
-          <p>Data premiery <h3>{movie.release_date}</h3></p>
-          <p>Budżet <h3>{movie.budget}</h3></p>
+          <p>Pierwszy odcinek <h3>{movie.first_air_date}</h3></p>
+          <p>Ostatni odcinek <h3>{movie.last_air_date == undefined ? "Ongoing" : movie.last_air_date}</h3></p>
+          <p>Ilość sezonów <h3>{movie.number_of_seasons}</h3></p>
+          <p>Ilość odcinków <h3>{movie.number_of_episodes}</h3></p>
+          <p>Długość odcinka <h3>{movie.episode_run_time} min</h3></p>
         </div>
       </div>
     </div>
   )
 }
 
+const movieID = window.location.href.substring(28)
 
-
-const movieID = window.location.href.substring(27)
-const JSON = getJSON(`https://api.themoviedb.org/3/movie/${movieID}?api_key=87bf596c371c406133fdf1b253db9a36&language=pl`)
 const backdrop = ReactDOM.createRoot(document.getElementById('backdrop'))
-backdrop.render(<RenderBackdrop movie = {JSON} />)
+backdrop.render(<RenderBackdrop movieID = {movieID} />)
 
 const mainInfo = ReactDOM.createRoot(document.getElementById('mainInfo'))
-mainInfo.render(<RenderMainInfo movie = {JSON}/>)
+mainInfo.render(<RenderMainInfo movieID = {movieID}/>)
+
+
+
+
+
 
 
 function RenderSearchResults(props) {
   const arrayOfMovies = props.arrayOfMovies;
   const listOfSearchResults = arrayOfMovies.slice(0, 3).map((movie) => (
 
-    <li key={movie.id}>
+    <li key={movie.id} className="result">
       <a href={`/${movie.media_type}/${movie.id}`}>
-        <img
-          src={`https://image.tmdb.org/t/p/original${movie.poster_path}`}
-          alt={movie.title}
-        />
-        <div className="container--info">
+        <img src={`https://image.tmdb.org/t/p/original${movie.poster_path}`} alt={movie.title}/>
+        <div className="result--info">
           <h3>{movie.title}</h3>
           <p>
-            {movie.overview == ""
-              ? "Brak opisu :("
-              : `${movie.overview.substring(0, 240)}...`}
+            {movie.overview == "" ? "Brak opisu :(" : `${movie.overview.substring(0, 240)}...`}
           </p>
         </div>
       </a>

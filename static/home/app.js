@@ -133,18 +133,13 @@ function RenderSearchResults(props) {
   const arrayOfMovies = props.arrayOfMovies;
   const listOfSearchResults = arrayOfMovies.slice(0, 3).map((movie) => (
 
-    <li key={movie.id}>
+    <li key={movie.id} className="result">
       <a href={`/${movie.media_type}/${movie.id}`}>
-        <img
-          src={`https://image.tmdb.org/t/p/original${movie.poster_path}`}
-          alt={movie.title}
-        />
-        <div className="container--info">
+        <img src={`https://image.tmdb.org/t/p/original${movie.poster_path}`} alt={movie.title}/>
+        <div className="result--info">
           <h3>{movie.title}</h3>
           <p>
-            {movie.overview == ""
-              ? "Brak opisu :("
-              : `${movie.overview.substring(0, 240)}...`}
+            {movie.overview == "" ? "Brak opisu :(" : `${movie.overview.substring(0, 240)}...`}
           </p>
         </div>
       </a>

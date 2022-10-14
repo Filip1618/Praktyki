@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Spotlight of the Movies</title>
+    <title>Document</title>
     <script
       crossorigin
       src="https://unpkg.com/react@18/umd/react.development.js"
@@ -14,7 +14,12 @@
       src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
     ></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <link rel="stylesheet" href="../static/home/style.css" />
+    <link rel="stylesheet" href="../static/tv_show/style.css" />
+    <link
+      href="http://fonts.googleapis.com/css?family=Bitter&subset=latin,latin-ext"
+      rel="stylesheet"
+      type="text/css"
+    />
   </head>
   <body>
     <header class="header">
@@ -44,17 +49,52 @@
       </div>
     </header>
     <div class="main--container" id="mainContainer">
-      <div class="main--content">
-        <div class="random--movie" id="randomMovie">
-          
-        </div>
-        <div class="trending--movies" id="trendingMovies">
-          
+      <div class="backdrop--container" id="backdrop">
+
+      </div>
+      <div class="main--info--container" id="mainInfo">
+
+      </div>
+      <div class="comments--container">
+        <div class="comments--section">
+          {% if current_user.is_authenticated%}
+          <div class="upload--comment">
+          <form action="/serial/{{tv_show_id}}" method="post">
+            <h3>{{current_user.username}}</h3>
+            <div class="input--container input-effect">
+              {{comment_forms.comment_stringfield(class="input--field")}}
+              <label>Dodaj komentarz</label>
+              <span class="focus-border"></span>
+            </div>
+            <div class="submit--button">
+              {{comment_forms.comment_submit(value="Skomentuj")}} 
+            </div>
+          </form>
+          </div>
+          {%else%}
+            <div class="upload--comment">
+              Zaloguj się by móc ocenić oraz napisać komentarz
+            </div>
+          {%endif%}
+
+          <div class="comments">
+            {% for comment in list_of_comments %}
+              <div class="comment">
+                <div class="info">
+                  <p class="username">{{comment.username}}</p>
+                  <p class="date">{{comment.date}}</p>
+                </div>
+                <div class="content">
+                  <p>{{comment.content}}</p>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
         </div>
       </div>
     </div>
 
-    <script src="../static/home/app.js" type="text/babel"></script>
+    <script src="../static/tv_show/app.js" type="text/babel"></script>
     <script
       type="text/javascript"
       src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"

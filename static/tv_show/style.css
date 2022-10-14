@@ -217,6 +217,7 @@ input[type="password"] {
   width: min-content;
   height: 560px;
   position: relative;
+  
 }
 
 .backdrop:before {
@@ -232,7 +233,6 @@ input[type="password"] {
 .backdrop img {
   height: 100%;
   z-index: -1;
-  box-shadow: inset 0px 0px 53px 16px #fff;
 }
 
 .backdrop .backdrop--info {
