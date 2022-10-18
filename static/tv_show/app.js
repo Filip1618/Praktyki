@@ -109,13 +109,37 @@ function RenderMainInfo(props) {
   )
 }
 
-const movieID = window.location.href.substring(28)
+
+
+var mediaID = window.location.href.substring(28)
 
 const backdrop = ReactDOM.createRoot(document.getElementById('backdrop'))
-backdrop.render(<RenderBackdrop movieID = {movieID} />)
+backdrop.render(<RenderBackdrop movieID = {mediaID} />)
 
 const mainInfo = ReactDOM.createRoot(document.getElementById('mainInfo'))
-mainInfo.render(<RenderMainInfo movieID = {movieID}/>)
+mainInfo.render(<RenderMainInfo movieID = {mediaID}/>)
+
+
+
+document.querySelectorAll('.confirm--button').forEach((confirmButton) => {
+  confirmButton.addEventListener('click', () => {
+    const reason = confirmButton.previousElementSibling.firstChild.nextElementSibling.value
+    const commentID = confirmButton.value
+
+    let json = JSON.stringify({'commentID': commentID, 'reason' : reason})
+    $.ajax({
+      url: "/hideComment",
+      type: "POST",
+      contentType: "application/json",
+      data: JSON.stringify(json),
+      success: () => {
+        document.location.reload()
+      }
+    });
+
+  })
+
+})
 
 
 

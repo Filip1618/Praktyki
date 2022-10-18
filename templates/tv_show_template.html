@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Serial</title>
     <script
       crossorigin
       src="https://unpkg.com/react@18/umd/react.development.js"
@@ -49,45 +49,120 @@
       </div>
     </header>
     <div class="main--container" id="mainContainer">
-      <div class="backdrop--container" id="backdrop">
-
-      </div>
-      <div class="main--info--container" id="mainInfo">
-
-      </div>
+      <div class="backdrop--container" id="backdrop"></div>
+      <div class="main--info--container" id="mainInfo"></div>
       <div class="comments--container">
         <div class="comments--section">
-          {% if current_user.is_authenticated%}
+          {% if current_user.is_authenticated %}
+          {% if comment_already_uploaded == False %}
           <div class="upload--comment">
-          <form action="/serial/{{tv_show_id}}" method="post">
-            <h3>{{current_user.username}}</h3>
-            <div class="input--container input-effect">
-              {{comment_forms.comment_stringfield(class="input--field")}}
-              <label>Dodaj komentarz</label>
-              <span class="focus-border"></span>
-            </div>
-            <div class="submit--button">
-              {{comment_forms.comment_submit(value="Skomentuj")}} 
-            </div>
-          </form>
+            <form action="/serial/{{tv_show_id}}" method="post">
+              <h3>{{current_user.username}}</h3>
+              <div class="radio--field">
+                <input
+                  id="comment_radio_field-4"
+                  name="comment_radio_field"
+                  required=""
+                  type="radio"
+                  value="5"
+                />
+                <label for="comment_radio_field-4">☆</label>
+                <input
+                  id="comment_radio_field-3"
+                  name="comment_radio_field"
+                  required=""
+                  type="radio"
+                  value="4"
+                />
+                <label for="comment_radio_field-3">☆</label>
+                <input
+                  id="comment_radio_field-2"
+                  name="comment_radio_field"
+                  required=""
+                  type="radio"
+                  value="3"
+                />
+                <label for="comment_radio_field-2">☆</label>
+                <input
+                  id="comment_radio_field-1"
+                  name="comment_radio_field"
+                  required=""
+                  type="radio"
+                  value="2"
+                />
+                <label for="comment_radio_field-1">☆</label>
+                <input
+                  id="comment_radio_field-0"
+                  name="comment_radio_field"
+                  required=""
+                  type="radio"
+                  value="1"
+                />
+                <label for="comment_radio_field-0">☆</label>
+              </div>
+              <div class="input--container input-effect">
+                {{comment_forms.comment_stringfield(class="input--field")}}
+                <label>Dodaj komentarz</label>
+                <span class="focus-border"></span>
+              </div>
+              <div class="submit--button">
+                {{comment_forms.comment_submit(value="Skomentuj")}}
+              </div>
+            </form>
           </div>
+          {% else %}
+          <div class="upload--comment">
+            Zamieściłeś już komentarz pod tym serialem
+          </div>
+          {% endif %}
           {%else%}
-            <div class="upload--comment">
-              Zaloguj się by móc ocenić oraz napisać komentarz
-            </div>
+          <div class="upload--comment">
+            Zaloguj się by móc ocenić oraz napisać komentarz
+          </div>
           {%endif%}
 
           <div class="comments">
-            {% for comment in list_of_comments %}
-              <div class="comment">
-                <div class="info">
-                  <p class="username">{{comment.username}}</p>
-                  <p class="date">{{comment.date}}</p>
+            {% for comment in list_of_comments %} 
+            {% if comment.is_hidden == False or current_user.is_admin == True or current_user.id == comment.user_id%}
+            <div class="comment">
+              <div class="info">
+                <p class="username">{{user_id_to_username(comment.user_id)}}</p>
+                <div class="rating">
+                  {% for star in range(comment.rate)%}
+                    <p class="filled">☆</p>
+                  {% endfor %}
+                  {% set counter = 5 - comment.rate%}
+                  {% for star in range(counter)%}
+                    <p>☆</p>
+                  {% endfor %}
                 </div>
-                <div class="content">
-                  <p>{{comment.content}}</p>
+                <p class="date">{{comment.date.strftime('%d-%m-%Y')}}</p>
+                {% if current_user.is_authenticated and current_user.is_admin == True%}
+                {% if comment.is_hidden == False %}
+                  <div class="admin--tool">
+                    <input id="checkbox" type="checkbox" name="">
+                    <div class="admin--pop--up">
+                      <div class="input--container input-effect">
+                        <input class="input--field" id="adminReason" name="adminReason" required="" type="text" defaultValue="">
+                        <label>Napisz powód ukrycia komentarza</label>
+                        <span class="focus-border"></span>
+                      </div>
+                      <button value="{{comment.id}}" class="confirm--button">Zatwierdz</button>
+                    </div>
+                    <label for="checkbox"><img src="/static/tv_show/eye.png" alt=""></label>
+                  </div>
+                {%else%}
+                <div class="admin--tool">
+                  <p>Komentarz jest ukryty</p>
                 </div>
+                {% endif %}
+                {% endif %}
               </div>
+              <div class="content">
+                <p>{{comment.content}}</p>
+              </div>
+            </div>
+            {% endif %} 
             {% endfor %}
           </div>
         </div>

@@ -1,5 +1,5 @@
-from flask import Flask, render_template, redirect, url_for, request
-from wtforms import (StringField, SubmitField, PasswordField)
+from flask import Flask, render_template, redirect, url_for, request, json, jsonify, abort
+from wtforms import (StringField, SubmitField, PasswordField, RadioField)
 from flask_wtf import FlaskForm
 from wtforms.validators import input_required
 from flask_sqlalchemy import SQLAlchemy
@@ -8,8 +8,9 @@ from dotenv import load_dotenv
 from os import getenv
 from flask_bcrypt import Bcrypt
 from datetime import datetime
-from sqlalchemy import Column, Integer, DateTime
+from sqlalchemy import Column, Integer, DateTime, Boolean
 from sqlalchemy.ext.declarative import declarative_base
+
 
 load_dotenv()
 DATABASE_USERNAME=getenv('DATABASE_USERNAME')
@@ -32,25 +33,35 @@ app.config['SECRET_KEY'] = APP_KEY
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
+def user_id_to_username(user_id):
+    username = Users.query.filter_by(id = user_id).first().username
+    return username
+
+
+app.jinja_env.globals.update(user_id_to_username=user_id_to_username)
+
 
 class Users(db.Model, UserMixin):
-	id = db.Column(db.Integer, primary_key = True)
-	username = db.Column(db.String(32), nullable=False, unique=True)
-	password = db.Column(db.String(64), nullable=False, unique=False)
-	firstname = db.Column(db.String(32),nullable=False, unique=False)
-	lastname = db.Column(db.String(32), nullable=False, unique=False)
+    id = db.Column(db.Integer, primary_key = True)
+    username = db.Column(db.String(32), nullable=False, unique=True)
+    password = db.Column(db.String(64), nullable=False, unique=False)
+    firstname = db.Column(db.String(32),nullable=False, unique=False)
+    lastname = db.Column(db.String(32), nullable=False, unique=False)
+    is_admin = db.Column(db.Boolean, nullable=False, default=False, unique=False)
+
 
 
 class Comments(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     content = db.Column(db.String(256), nullable=False, unique=False)
     date = db.Column(db.DateTime, nullable=False, unique=False, default=datetime.utcnow)
-    username = db.Column(db.String(32), nullable=False, unique=False)
+    rate =  db.Column(db.Integer, nullable=False, unique=False)
+    user_id = db.Column(db.Integer, nullable=False, unique=False)
+    is_hidden = db.Column(db.Boolean, nullable=False, default=False, unique=False)
+    ban_reason = db.Column(db.String(256), nullable = True, unique = False)
     media_type = db.Column(db.String(16), nullable=False, unique=False)
     media_id = db.Column(db.Integer, nullable=False, unique=False)
 
-
-    
 
 
 class Register_forms(FlaskForm):
@@ -116,7 +127,6 @@ class Login_forms(FlaskForm):
 class Comments_forms(FlaskForm):
     comment_submit = SubmitField("Skomentuj")
     comment_stringfield = StringField(validators=[input_required()])
-
     def validate(self):
         if len(self.comment_stringfield.data) < 1:
             raise Exception("Komentarz nie może być pusty")
@@ -174,15 +184,23 @@ def tv_show_template(tv_show_id):
     comment_forms = Comments_forms()
 
     if comment_forms.validate_on_submit() and current_user.is_authenticated:
-        new_comment = Comments(content = comment_forms.comment_stringfield.data, username = current_user.username, 
-                                media_type="serial", media_id = tv_show_id)
+        new_comment = Comments(content = comment_forms.comment_stringfield.data, rate=request.form['comment_radio_field'], 
+                                user_id = current_user.id, media_type="serial", media_id = tv_show_id)
         db.session.add(new_comment)
         db.session.commit()
         return redirect(f"/serial/{tv_show_id}")
 
+    comment_already_uploaded = None
     list_of_comments = Comments.query.filter_by(media_type = "serial", media_id = tv_show_id)
+    if current_user.is_authenticated:
+        if_user_uploaded_comment = Comments.query.filter_by(media_type = "serial", media_id = tv_show_id, user_id = current_user.id).first()
+        if if_user_uploaded_comment:
+            comment_already_uploaded = True
+        else:
+            comment_already_uploaded = False
 
-    return render_template('tv_show_template.html', tv_show_id = tv_show_id, comment_forms=comment_forms, list_of_comments = list_of_comments)
+    return render_template('tv_show_template.html', tv_show_id = tv_show_id, comment_forms=comment_forms,
+                            list_of_comments = list_of_comments, comment_already_uploaded = comment_already_uploaded)
 
 
 @app.route('/film/<movie_id>', methods=['GET', 'POST'])
@@ -190,16 +208,55 @@ def movie_template(movie_id):
     comment_forms = Comments_forms()
 
     if comment_forms.validate_on_submit() and current_user.is_authenticated:
-        new_comment = Comments(content = comment_forms.comment_stringfield.data, username = current_user.username, 
-                               media_type="film", media_id = movie_id)
+        new_comment = Comments(content = comment_forms.comment_stringfield.data, rate=request.form['comment_radio_field'], 
+                                user_id = current_user.id, media_type="film", media_id = movie_id)
         db.session.add(new_comment)
         db.session.commit()
         return redirect(f"/film/{movie_id}")
 
+    comment_already_uploaded = None
     list_of_comments = Comments.query.filter_by(media_type = "film", media_id = movie_id)
+    if current_user.is_authenticated:
+        if_user_uploaded_comment = Comments.query.filter_by(media_type = "film", media_id = movie_id, user_id = current_user.id).first()
+        if if_user_uploaded_comment:
+            comment_already_uploaded = True
+        else:
+            comment_already_uploaded = False
+
+    return render_template('movie_template.html', movie_id = movie_id, comment_forms=comment_forms,
+                            list_of_comments = list_of_comments, comment_already_uploaded = comment_already_uploaded)
+
+@app.route('/admin_panel', methods=['GET', 'POST'])
+def admin_panel():
+
+    comments = Comments.query.all()
+
+    return render_template('admin_panel.html', comments = comments)
 
 
-    return render_template('movie_template.html', movie_id=movie_id, comment_forms=comment_forms, list_of_comments = list_of_comments)
+@app.route('/hideComment', methods=['POST'])
+def hideComment():
+    if request.method == 'POST':
+        result = json.loads(request.get_json())
+
+        comment = Comments.query.filter_by(id=result['commentID']).first()
+        comment.is_hidden = True
+        comment.ban_reason = result['reason']
+        db.session.commit()
+
+        return jsonify({'success': True})
+
+@app.route('/deleteComment', methods=['POST'])
+def deleteComment():
+    if current_user.is_admin == True:
+        results = json.loads(request.get_json())
+
+        comment_id = results.get('commentID')
+
+        Comments.query.filter_by(id = comment_id).delete()
+        db.session.commit()
+
+        return jsonify({'success': True})
 
 @login_manager.user_loader
 def load_user(user_id):

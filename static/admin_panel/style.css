@@ -1,0 +1,159 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800&display=swap");
+
+:root{
+  --material-black:#292929;
+  --royal-yellow:#fada5e;
+}
+
+* {
+  margin: 0;
+  font-family: "Poppins";
+  padding: 0;
+  list-style: none;
+  text-decoration: none;
+  box-sizing: border-box;
+  border: none;
+}
+
+body{
+  width: 100vw;
+  overflow-x: hidden;
+}
+
+
+.header{
+  width: 100vw;
+  height: 4rem;
+  position: fixed;
+  background-color: var(--royal-yellow);
+  z-index: 999;
+  display: flex;
+  flex-direction: column
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+}
+
+.navbar--logo{
+  margin: 1rem;
+}
+
+
+.navbar--logo img{
+  height: 52px;
+}
+
+
+.main--container{
+  transform: translateY(4rem);
+  width: 100vw;
+}
+
+.tabel--container{
+  width: 100%;
+}
+
+.wrapper{
+  width: 100%;
+}
+
+.row-fadeIn-wrapper{
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.title{
+  background-color: var(--material-black);
+  color: #fff;
+}
+
+.title ul li{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.fade--in{
+  transition: all .3s ease-out;
+}
+
+.fade--in:hover{
+  background-color: #A9A9A9;
+  box-shadow: 0px 0px 70px -13px rgba(66, 68, 90, 1);
+}
+
+.row ul{
+  display: flex;
+  gap: 1rem;
+}
+
+
+
+.row ul li{
+  width: 15%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem 0 ;
+}
+
+.row ul li p{
+  width: min-content;
+}
+
+.id--column{
+  width: 4rem !important;
+}
+
+.more--content{
+  overflow: hidden;
+  max-height: 0;
+  display: flex;
+  transition: all .5s ease-in-out;
+}
+
+.more--content li{
+  display: flex;
+  gap: 1rem;
+}
+
+.more--content li img{
+  height: 2rem;
+}
+ul:hover + .more--content,
+.more--content:hover{
+  max-height: 200px;
+}
+
+.delete--button{
+  background-color: #f14245;
+  border-radius: 1rem;
+  color: #fff;
+  margin: 1rem;
+  cursor: pointer;
+  height: 3rem;
+  width: 200px !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.rating{
+  display: flex;
+}
+
+.rating p{
+  color: #F2D300;
+  font-size: 2rem;
+  height: min-content;
+}
+
+.rating p.filled::before{
+  content: "\2605";
+  position: absolute;
+}

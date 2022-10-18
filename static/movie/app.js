@@ -103,31 +103,53 @@ function RenderMainInfo(props) {
 
 
 
-const movieID = window.location.href.substring(27)
-const JSON = getJSON(`https://api.themoviedb.org/3/movie/${movieID}?api_key=87bf596c371c406133fdf1b253db9a36&language=pl`)
+var mediaID = window.location.href.substring(27)
+var movie = getJSON(`https://api.themoviedb.org/3/movie/${mediaID}?api_key=87bf596c371c406133fdf1b253db9a36&language=pl`)
+
 const backdrop = ReactDOM.createRoot(document.getElementById('backdrop'))
-backdrop.render(<RenderBackdrop movie = {JSON} />)
+backdrop.render(<RenderBackdrop movie = {movie} />)
 
 const mainInfo = ReactDOM.createRoot(document.getElementById('mainInfo'))
-mainInfo.render(<RenderMainInfo movie = {JSON}/>)
+mainInfo.render(<RenderMainInfo movie = {movie}/>)
+
+
+
+document.querySelectorAll('.confirm--button').forEach((confirmButton) => {
+  confirmButton.addEventListener('click', () => {
+    const reason = confirmButton.previousElementSibling.firstChild.nextElementSibling.value
+    const commentID = confirmButton.value
+
+    let json = JSON.stringify({'commentID': commentID, 'reason' : reason})
+    $.ajax({
+      url: "/hideComment",
+      type: "POST",
+      contentType: "application/json",
+      data: JSON.stringify(json),
+      success: (response) => {
+        document.location.reload()
+      }
+    });
+
+  })
+})
+
+
+
+
+
 
 
 function RenderSearchResults(props) {
   const arrayOfMovies = props.arrayOfMovies;
   const listOfSearchResults = arrayOfMovies.slice(0, 3).map((movie) => (
 
-    <li key={movie.id}>
+    <li key={movie.id} className="result">
       <a href={`/${movie.media_type}/${movie.id}`}>
-        <img
-          src={`https://image.tmdb.org/t/p/original${movie.poster_path}`}
-          alt={movie.title}
-        />
-        <div className="container--info">
+        <img src={`https://image.tmdb.org/t/p/original${movie.poster_path}`} alt={movie.title}/>
+        <div className="result--info">
           <h3>{movie.title}</h3>
           <p>
-            {movie.overview == ""
-              ? "Brak opisu :("
-              : `${movie.overview.substring(0, 240)}...`}
+            {movie.overview == "" ? "Brak opisu :(" : `${movie.overview.substring(0, 240)}...`}
           </p>
         </div>
       </a>
@@ -182,4 +204,52 @@ document.getElementById("mainContainer").addEventListener("click", () => {
 document.getElementById("searchBar").addEventListener("click", () => {
   document.getElementById("searchArea").style.display = "initial";
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

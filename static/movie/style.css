@@ -30,15 +30,18 @@ body {
   flex-direction: column
 }
 
-.navbar {
+.navbar{
   display: flex;
   justify-content: space-between;
   align-items: center;
   height: 100%;
 }
+
 .navbar--search{
-  max-width: 300px;
+  max-width: 500px;
+  width: 50%;
 }
+
 .navbar div {
   margin: 1rem;
 }
@@ -112,7 +115,7 @@ input[type="password"] {
 
 .input--field:focus ~ label,
 .input--field:valid ~ label {
-  left: -200px;
+  left: -300px;
   font-size: 14px;
   color: var(--material-black);
 }
@@ -128,16 +131,23 @@ input[type="password"] {
   height: 60vw;
 }
 
-.list--of--results {
+.list--of--results{
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+  overflow-y: scroll;
+  height: 100%;
 }
 
-.list--of--results li {
+.result{
   margin: 1rem;
 }
 
-.list--of--results a {
+.list--of--results > a{
+  text-decoration: underline;
+}
+
+.list--of--results a{
   color: #fff;
   font-size: larger;
   align-self: center;
@@ -145,26 +155,27 @@ input[type="password"] {
   margin: 1rem;
 }
 
-.container--info {
+.result--info {
   width: 70%;
 }
 
-.container--info h3 {
+.result--info h3{
   color: var(--royal-yellow);
 }
 
-.container--info p {
+.result--info p{
   color: #fff;
 }
 
-.list--of--results li a {
+.result a{
   display: flex;
   justify-content: center;
   width: 100%;
   gap: 2rem;
+  text-decoration: none !important;
 }
 
-.list--of--results li a img {
+.result a img{
   height: 200px;
   box-shadow: 0px 22px 53px -14px var(--royal-yellow);
 }
@@ -217,6 +228,7 @@ input[type="password"] {
   width: min-content;
   height: 560px;
   position: relative;
+  
 }
 
 .backdrop:before {
@@ -232,7 +244,6 @@ input[type="password"] {
 .backdrop img {
   height: 100%;
   z-index: -1;
-  box-shadow: inset 0px 0px 53px 16px #fff;
 }
 
 .backdrop .backdrop--info {
@@ -323,6 +334,43 @@ input[type="password"] {
   border-radius: 1rem;
 }
 
+.radio--field {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+  width: min-content;
+}
+
+
+.radio--field >  input{ display:none;}
+
+.radio--field > label {
+  position: relative;
+  width: 1.1em;
+  font-size: 3rem;
+  color: #FFD700;
+  cursor: pointer;
+}
+
+.radio--field > label::before{ 
+  content: "\2605";
+  position: absolute;
+  opacity: 0;
+}
+
+.radio--field > label:hover:before,
+.radio--field > label:hover ~ label:before {
+  opacity: 1 !important;
+}
+
+.radio--field > input:checked ~ label:before{
+  opacity:1;
+}
+
+.radio--field:hover > input:checked ~ label:before{ 
+  opacity: 0.4; 
+}
+
 .comments{
   display: flex;
   flex-direction: column;
@@ -339,18 +387,94 @@ input[type="password"] {
   width: 100%;
 }
 
+.username{
+  font-weight: 800;
+  font-size: larger;
+}
+
 .comment .info{
   display: flex;
   gap:  1rem;
+  align-items: center;
 }
 
-.username{
-  font-weight: 800;
-  font-size: large;
+.username,
+.date{
+  height: min-content;
+}
+
+
+.rating{
+  display: flex;
+}
+
+.rating p{
+  color: #FFD700;
+  font-size: 2rem;
+  height: min-content;
+}
+
+.rating p.filled::before{
+  content: "\2605";
+  position: absolute;
 }
 
 .date{
   opacity: 0.5;
+}
+
+.admin--tool{
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  gap: 1rem;
+}
+
+.admin--tool p{
+  opacity: 0.5;
+}
+
+.admin--pop--up{
+  display: none;
+  height: min-content;
+  gap: 1rem;
+}
+
+.admin--tool label{
+  height: 2rem;
+  opacity: 0.5;
+  cursor: pointer;
+}
+
+.admin--pop--up .input--container{
+  margin: 0 !important;
+  width: 280px;
+  height: min-content;
+}
+
+#checkbox{
+  display: none;
+}
+
+#checkbox:checked + .admin--pop--up{
+  display: flex;
+  align-items: center;
+}
+
+.confirm--button{
+  height: 3rem;
+  background-color: var(--material-black);
+	color: #fff;
+  text-align: center;
+  border: none;
+	font: inherit;
+	cursor: pointer;
+  border-radius: .5rem;
+  padding: 0 .5rem;
+}
+
+.admin--tool img{
+  height: 2rem;
 }
 
 .icon{
@@ -360,6 +484,7 @@ input[type="password"] {
 .logo{
   display: initial;
 }
+
 @media (max-width: 1500px) {
   .info .overview{
     display: none !important;
