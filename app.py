@@ -229,9 +229,15 @@ def movie_template(movie_id):
 @app.route('/admin_panel', methods=['GET', 'POST'])
 def admin_panel():
 
-    comments = Comments.query.all()
+    if current_user.is_authenticated:
+        if current_user.is_admin:
+            comments = Comments.query.all()
+            return render_template('admin_panel.html', comments = comments)
+        else:
+            abort(404)
+    else:
+        abort(404)
 
-    return render_template('admin_panel.html', comments = comments)
 
 
 @app.route('/hideComment', methods=['POST'])
@@ -257,6 +263,27 @@ def deleteComment():
         db.session.commit()
 
         return jsonify({'success': True})
+
+@app.route('/getRating', methods=['POST'])
+def getStars():
+    results = json.loads(request.get_json())
+
+    media_id = results.get('mediaID')
+    media_type = results.get('mediaType')
+
+    comments = Comments.query.filter_by(media_id = media_id, media_type = media_type, is_hidden = False)
+
+    list_of_rates = []
+    for comment in comments:
+        list_of_rates.append(comment.rate)
+
+    if len(list_of_rates) == 0:
+        return jsonify({'average': False})
+
+    average = sum(list_of_rates)/len(list_of_rates)
+    average_rounded = round(average, 1)
+    
+    return jsonify({'average': average_rounded})
 
 @login_manager.user_loader
 def load_user(user_id):

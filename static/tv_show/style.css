@@ -452,11 +452,11 @@ input[type="password"] {
   height: min-content;
 }
 
-#checkbox{
+.checkbox{
   display: none;
 }
 
-#checkbox:checked + .admin--pop--up{
+.checkbox:checked + .admin--pop--up{
   display: flex;
   align-items: center;
 }

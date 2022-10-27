@@ -82,7 +82,6 @@ body{
 }
 
 .fade--in:hover{
-  background-color: #A9A9A9;
   box-shadow: 0px 0px 70px -13px rgba(66, 68, 90, 1);
 }
 
@@ -109,6 +108,10 @@ body{
   width: 4rem !important;
 }
 
+.date--column{
+  width: 150px !important;
+}
+
 .more--content{
   overflow: hidden;
   max-height: 0;
@@ -119,6 +122,7 @@ body{
 .more--content li{
   display: flex;
   gap: 1rem;
+  min-width: 200px;
 }
 
 .more--content li img{
@@ -128,6 +132,13 @@ ul:hover + .more--content,
 .more--content:hover{
   max-height: 200px;
 }
+
+.more--content{
+  display: flex;
+  justify-content: space-between;
+}
+
+
 
 .delete--button{
   background-color: #f14245;
@@ -141,6 +152,86 @@ ul:hover + .more--content,
   justify-content: center;
   align-items: center;
   gap: 1rem;
+  min-width: 200px;
+}
+
+input[type="text"], input[type="password"]{
+  font: 20px "Poppin", sans-serif;
+  color: #333;
+  width: 100%;
+  box-sizing: border-box;
+  letter-spacing: 1px;
+}
+
+:focus {
+  outline: none;
+}
+
+.input--container {
+  width: 100%;
+  margin: 2rem 0 2rem 0;
+  position: relative;
+  overflow: hidden;
+  z-index: 2;
+} 
+
+.input--field{
+  border: 0;
+  padding: 5px 0;
+  border-bottom: 4px solid var(--material-black);
+  background-color: transparent;
+}
+
+.input--field ~ .focus-border {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 4px;
+  background-color: var(--material-black);
+  transition: 0.4s;
+}
+
+
+.input--field:focus ~ .focus-border,
+.input--field:valid ~ .focus-border {
+  width: 100%;
+  transition: 0.4s;
+}
+
+
+.input--field ~ label {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  top: 4px;
+  color: var(--material-black);
+  transition: 0.3s;
+  z-index: -1;
+
+}
+
+
+.input--field:focus ~ label,
+.input--field:valid ~ label {
+  left: -200px;
+  font-size: 14px;
+  color: var(--material-black);
+}
+
+.hide--button{
+  background-color: var(--royal-yellow);
+  border-radius: 1rem;
+  color: var(--material-black);
+  margin: 1rem;
+  cursor: pointer;
+  height: 3rem;
+  width: 200px !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  min-width: 200px;
 }
 
 .rating{

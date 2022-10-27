@@ -6,13 +6,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="../static/admin_panel/style.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <link rel="icon" type="image/x-icon" href="../static/images/SotM-icon.svg">
   <title>Admin panel</title>
 </head>
 <body>
   <header class="header">
     <nav class="navbar">
       <div class="navbar--logo">
-        <img class="logo" src="../static/home/SotM-logo.webp" alt="SotM-logo" />
+        <a href="/home">
+        <img class="logo" src="../static/images/SotM-logo.webp" alt="SotM-logo" />
+        </a>
       </div>
     </nav>
   </header>
@@ -23,7 +26,7 @@
           <ul>
             <li class="id--column"><h3>ID</h3></li>
             <li><h3>ID użytkownika (Nazwa użytkownika)</h3></li>
-            <li><h3>Data</h3></li>
+            <li class="date--column"><h3>Data</h3></li>
             <li><h3>Treść komentarza</h3></li>
             <li><h3>Ocena</h3></li>
             <li><h3>Widoczność</h3></li>
@@ -37,7 +40,7 @@
               <ul>
                 <li class="id--column"><p>{{comment.id}}</p></li>
                 <li><p>{{comment.user_id}}</p></li>
-                <li><p>{{comment.date}}</p></li>
+                <li class="date--column"><p>{{comment.date}}</p></li>
                 <li><p>{{comment.content}}</p></li>
                 <li><div class="rating">
                   {% for star in range(comment.rate)%}
@@ -60,6 +63,14 @@
               </ul>
               <ul class="more--content">
                 <li><button class="delete--button" type="submit" value="{{comment.id}}"><h5>Usuń komentarz</h5> <img src="../static/admin_panel/trash.webp" alt=""></button></li>
+                <li style="min-width: 600px;">
+                <div class="input--container">
+                  <input class="input--field" name="hide--reason" required="" type="text" value=""/>
+                  <label>Powód ukrycia komentarza</label>
+                  <span class="focus-border"></span>
+                </div>
+                <button class="hide--button" type="submit" value="{{comment.id}}"><h5>Ukryj komentarz</h5> <img src="../static/admin_panel/hidden.webp" alt=""></button>
+                </li>
               </ul>
             </article>
           {% endfor %}

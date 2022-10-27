@@ -68,28 +68,65 @@ const getJSON = (url) => {
 };
 
 function RenderBackdrop(props){
-  const movieID = props.movieID
+  const movie = props.movie
 
-  var movie = getJSON(`https://api.themoviedb.org/3/tv/${movieID}?api_key=87bf596c371c406133fdf1b253db9a36&language=pl`)
+  const json = JSON.stringify({'mediaType': 'serial', 'mediaID':  window.location.href.substring(29)})
+  
+  const getRatingPromise = new Promise((resolve, reject) => {
+    $.ajax({
+      url: "/getRating",
+      type: "POST",
+      contentType: "application/json",
+      data: JSON.stringify(json),
+      success: (result) => {
+        resolve(result.average)
+      },
+      error: (error) => {
+        reject(error)
+      }
+    });
+  })
+
+  getRatingPromise.then(average => {
+    if (average == false) {
+      $('#ratingAverage').append('<p class="with--no--rating">Film nieposiada ocen</p>')
+    } else {
+      const rounded = Math.round(average)
+
+      for(var i = 0; i < rounded; i++){
+        $('#ratingAverage').append('<p class="filled">☆</p>');   
+      }
+  
+      for(var i = 0; i < 5 - rounded; i++){
+        $('#ratingAverage').append('<p>☆</p>');   
+      }
+    }
+
+  })
+
+
+
+
 
   return (
-      <div className="backdrop">
-        <div className="backdrop--info">
-          <h1>{movie.title}</h1>
-          <p>Serial</p>
-          <p>{movie.first_air_date.slice(0,4)}</p>
+    <div className="backdrop">
+      <div className="backdrop--info">
+        <h1>{movie.title}</h1>
+        <p>Serial</p>
+        <p>{movie.first_air_date.slice(0,4)}</p>
+        <div className='rating' id='ratingAverage'>
         </div>
-        <img
-          src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
-        />
+      </div>
+      <img
+        src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
+      />
     </div>
   );
 }
 
 function RenderMainInfo(props) {
-  const movieID = props.movieID
+  const movie = props.movie
 
-  var movie = getJSON(`https://api.themoviedb.org/3/tv/${movieID}?api_key=87bf596c371c406133fdf1b253db9a36&language=pl`)
 
   return(
     <div className="main--info">
@@ -111,13 +148,15 @@ function RenderMainInfo(props) {
 
 
 
-var mediaID = window.location.href.substring(28)
+var movieID = window.location.href.substring(28)
+var movie = getJSON(`https://api.themoviedb.org/3/tv/${movieID}?api_key=87bf596c371c406133fdf1b253db9a36&language=pl`)
+
 
 const backdrop = ReactDOM.createRoot(document.getElementById('backdrop'))
-backdrop.render(<RenderBackdrop movieID = {mediaID} />)
+backdrop.render(<RenderBackdrop movie = {movie} />)
 
 const mainInfo = ReactDOM.createRoot(document.getElementById('mainInfo'))
-mainInfo.render(<RenderMainInfo movieID = {mediaID}/>)
+mainInfo.render(<RenderMainInfo movie = {movie}/>)
 
 
 

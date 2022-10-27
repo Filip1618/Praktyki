@@ -70,12 +70,46 @@ const getJSON = (url) => {
 function RenderBackdrop(props){
   const movie = props.movie
 
+  const json = JSON.stringify({'mediaType': 'film', 'mediaID':  window.location.href.substring(27)})
+  const getRatingPromise = new Promise((resolve, reject) => {
+    $.ajax({
+      url: "/getRating",
+      type: "POST",
+      contentType: "application/json",
+      data: JSON.stringify(json),
+      success: (result) => {
+        resolve(result.average)
+      },
+      error: (error) => {
+        reject(error)
+      }
+    });
+  })
+
+  getRatingPromise.then(average => {
+    if (average == false) {
+      $('#ratingAverage').append('<p class="with--no--rating">Film nieposiada ocen</p>')
+    } else {
+      const rounded = Math.round(average)
+
+      for(var i = 0; i < rounded; i++){
+        $('#ratingAverage').append('<p class="filled">☆</p>');   
+      }
+  
+      for(var i = 0; i < 5 - rounded; i++){
+        $('#ratingAverage').append('<p>☆</p>');   
+      }
+    }
+
+  })
+
   return (
       <div className="backdrop">
         <div className="backdrop--info">
           <h1>{movie.title}</h1>
           <p>Film</p>
           <p>{movie.release_date.slice(0,4)}</p>
+          <div className='rating' id='ratingAverage'></div>
         </div>
         <img
           src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
